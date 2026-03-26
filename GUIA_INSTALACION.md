@@ -22,13 +22,25 @@ Carpeta dedicada al despliegue de la visualización interactiva de la red de inv
 - **Contenido**: Datos estáticos pre-calculados (nodos y aristas, tanto para publicaciones como para proyectos) extraídos de HUB-UR / VIVO mediante SPARQL.
 - **Detalle**: Funciona como caché para que la visualización sea instantánea y no requiera procesamiento en tiempo de ejecución de consultas pesadas en el triplestore.
 
+### 5. `coauthorNetwork.jsp`
+- **Ruta destino**: `webapps/ROOT/mapadeCoauthor/coauthorNetwork.jsp` (o dentro de `WEB-INF/custom/coauthorViz/` según la configuración).
+- **Contenido**: Script JSP que realiza consultas SPARQL al Triplestore para extraer los datos de investigadores, publicaciones y proyectos.
+- **Detalle**: Es el encargado de generar el archivo `baseData.json` si este no existe o ha expirado.
+
+### 6. `coauthorNetworkViz.ftl`
+- **Ruta destino**: `webapps/ROOT/templates/freemarker/body/coauthorNetworkViz.ftl`
+- **Contenido**: Plantilla de FreeMarker que actúa como el cuerpo de la página en VIVO. 
+- **Detalle**: Contiene el código HTML necesario para incrustar el mapa y los estilos/scripts requeridos dentro del layout de VIVO.
+
 ---
 
 ## 🚀 Pasos para la Instalación
 
-1. **Ubicación en el Entorno**: En el servidor donde corre el HUB, identifica la carpeta donde se alojan los archivos estáticos de este mapa (por ejemplo, dentro de `webapps/ROOT/mapadeCoauthor/` o similar, según la configuración del entorno local/servidor).
-2. **Copia de Seguridad**: Realiza una copia de seguridad de los archivos anteriores si ya existía una versión de este mapa.
-3. **Despliegue**: Copia los 4 archivos (`index.html`, `network_logic.js`, `legend_styles.css`, `baseData.json`) reemplazando los existentes en el servidor.
+1. **Copiar Archivos de Frontend**: Copia los archivos `index.html`, `network_logic.js`, `legend_styles.css` y `baseData.json` en la carpeta `webapps/ROOT/mapadeCoauthor/`.
+2. **Copiar Lógica del Servidor**:
+   - Copia `coauthorNetwork.jsp` en `webapps/ROOT/mapadeCoauthor/` (revisa si tu instalación lo requiere en `WEB-INF/custom/coauthorViz/`).
+   - Copia `coauthorNetworkViz.ftl` en `webapps/ROOT/templates/freemarker/body/`.
+3. **Copia de Seguridad**: Realiza una copia de seguridad de los archivos anteriores si ya existía una versión de este mapa.
 4. **Verificación en el Navegador**:
    - Acceder a la URL donde se haya mapeado el archivo HTML del mapa (generalmente `/mapadeCoauthor/index.html` o incrustado en otra página).
    - Presionar **Ctrl + Shift + R** (Hard Refresh) para evadir la caché del navegador y obligar la descarga del JS/CSS actualizados.
