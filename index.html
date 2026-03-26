@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<!--
+    ================================================================
+    index.html - Mapa de Coautorias (Versión Prácticas UR)
+    ================================================================
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Coautorias - Red de Investigadores</title>
+
+    <!-- Fuente Inter de Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Hoja de estilos principal -->
+    <link rel="stylesheet" href="legend_styles.css?v=4.2">
+</head>
+
+<body style="overflow: hidden;">
+    <div id="coauthor-map-wrapper">
+
+    <header id="app-header">
+        <div class="logo-dot"></div>
+        <h1>Mapa de Coautorias</h1>
+        <span class="subtitle">Red de Investigadores - Universidad del Rosario</span>
+
+        <div id="header-right">
+            <!-- TOGGLE DE CAPAS -->
+            <div id="layer-toggle-container" class="layer-toggle">
+                <button class="layer-btn active" data-layer="pubs" title="Ver red de coautorías académicas">&#x1F4DA;
+                    Publicaciones</button>
+                <button class="layer-btn" data-layer="grants" title="Ver red de proyectos de investigación">&#x1F52C;
+                    Proyectos</button>
+            </div>
+            <button id="btn-theme" class="hdr-btn" title="Cambiar tema">&#x1F319;</button>
+            <button id="btn-help" class="hdr-btn" title="Informacion del mapa">?</button>
+
+            <a id="btn-fullscreen" href="/mapadeCoauthor/index.html" target="_blank">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3">
+                    </path>
+                </svg>
+                Vista completa
+            </a>
+
+            <button id="btn-close-detail">&#10005; Volver a la red</button>
+        </div>
+    </header>
+
+    <div id="hover-tooltip"></div>
+
+    <div id="legend-panel">
+        <div id="legend-content">
+            <span id="legend-title">Filtrar por Facultad:</span>
+            <button id="legend-reset-btn">&#x2715; Ver todas</button>
+        </div>
+        <button id="legend-toggle" aria-label="Ocultar/mostrar filtros">&#x2304; Ocultar</button>
+    </div>
+
+    <div id="controls" class="glass">
+        <div id="search-container">
+            <input type="text" id="search-input" placeholder="Buscar investigador..." autocomplete="off">
+            <button id="search-btn">&#x21B5;</button>
+            <div id="search-suggestions"></div>
+        </div>
+    </div>
+
+    <div id="node-sidebar" class="glass">
+        <div class="sidebar-header">
+            <div id="node-avatar" class="node-avatar">?</div>
+            <div class="sidebar-flex">
+                <div id="node-name" class="node-name">&mdash;</div>
+                <span id="node-faculty-badge" class="node-faculty">&mdash;</span>
+            </div>
+            <span id="sidebar-close">&#x2715;</span>
+        </div>
+
+        <div class="node-stats">
+            <div class="stat-box">
+                <div id="stat-pubs" class="stat-value">&mdash;</div>
+                <div id="label-stat-pubs" class="stat-label">Coautorias</div>
+            </div>
+            <div class="stat-box">
+                <div id="stat-connections" class="stat-value">&mdash;</div>
+                <div id="label-stat-connections" class="stat-label">Coautores</div>
+            </div>
+        </div>
+
+        <div>
+            <div class="sidebar-section-title">Top colaboradores</div>
+            <div id="coauthor-list"></div>
+        </div>
+
+        <button id="btn-ego-net">&#x1F50D; Ver red personal</button>
+
+        <div class="switch-container" id="toggle-external-wrapper">
+            <span class="toggle-label">Perfiles externos</span>
+            <label class="switch">
+                <input type="checkbox" id="toggle-external">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <div id="info-overlay" class="glass">
+        <h4>&#x1F5FA;&#xFE0F; Mapa de Coautorias</h4>
+        <hr>
+        <div class="ov-section">&#x1F4D6; Como leer el mapa</div>
+        <div class="exp-row">
+            <div class="exp-icon">
+                <svg width="32" height="32">
+                    <circle cx="16" cy="16" r="14" fill="#38bdf8" opacity="0.9" />
+                </svg>
+            </div>
+            <div class="exp-text"><strong>Tamano del nodo</strong><br>= total de coautorias</div>
+        </div>
+        <hr>
+    </div>
+
+    <div id="info-panel" class="glass">
+        <span id="info-close">&times;</span>
+        <h3 id="info-title">Detalle de Coautoria</h3>
+        <div id="info-content"></div>
+    </div>
+
+    <div id="cinematic-overlay">
+        <div class="loading-backdrop"></div>
+        <div class="loading-card">
+            <div class="orbit-container">
+                <div class="orbit orbit-1"><div class="orbit-node n1"></div></div>
+                <div class="orbit orbit-2"><div class="orbit-node n2"></div></div>
+                <div class="orbit orbit-3"><div class="orbit-node n3"></div></div>
+                <div class="orbit-center"><div class="orbit-core"></div></div>
+            </div>
+            <div class="loading-title">Mapa de Coautorias</div>
+            <div class="loading-subtitle">Entorno de Prácticas - UR</div>
+            <div class="loading-bar-wrap">
+                <div class="loading-bar-fill" id="loading-bar"></div>
+            </div>
+            <div class="loading-status" id="loading-status">Calculando posiciones...</div>
+        </div>
+    </div>
+
+    <div id="recalc-overlay">
+        <div class="recalc-spinner"></div>
+        <div class="recalc-text">Recalculando red…</div>
+    </div>
+
+    <svg id="network-graph"></svg>
+    </div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="network_logic.js?v=4.2" charset="UTF-8"></script>
+
+</body>
+</html>
